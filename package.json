@@ -1,6 +1,6 @@
 {
-  "name": "app-metrics",
-  "version": "1.0.0",
+  "name": "application-metrics",
+  "version": "1.0.2",
   "description": "Metrics for a NodeJS application",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/papirosko/app-metrics.git"
+    "url": "git+https://github.com/papirosko/application-metrics.git"
   },
   "keywords": [
     "prometheus",
@@ -23,21 +23,20 @@
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/papirosko/app-metrics/issues"
+    "url": "https://github.com/papirosko/application-metrics/issues"
   },
-  "homepage": "https://github.com/papirosko/app-metrics#readme",
+  "homepage": "https://github.com/papirosko/application-metrics#readme",
   "devDependencies": {
+    "@types/node": "^12.20.37",
     "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.4.0",
     "eslint": "8.3.0",
     "eslint-plugin-import": "^2.25.3",
     "typescript": "^4.5.2"
   },
-  "peerDependencies": {
-    "prom-client": "^14.0.1",
-    "scats": "^1.0.32"
-  },
   "dependencies": {
+    "prom-client": "^14.0.1",
+    "scats": "^1.0.32",
     "tslib": "^2.1.0"
   }
 }

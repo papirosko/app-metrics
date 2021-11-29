@@ -1,11 +1,15 @@
 A set of metrics used for analyzing application state, based on [prometheus](https://prometheus.io/docs/concepts/metric_types/) metrics.
 
-
+Usage
+=====
+```
+npm i application-metrics
+```
 
 Counter
 =======
 ```typescript
-import {MetricsService} from 'app-metrics';
+import {MetricsService} from 'application-metrics';
 
 
 for (let i = 0; i < 100; i++) {
@@ -16,7 +20,7 @@ for (let i = 0; i < 100; i++) {
 Labels
 ======
 ```typescript
-import {MetricsService} from 'app-metrics';
+import {MetricsService} from 'application-metrics';
 
 const conf = {};// read conf  
 MetricsService.label('conf_value', conf.someValue)
@@ -25,7 +29,7 @@ MetricsService.label('conf_value', conf.someValue)
 Timers
 ======
 ```typescript
-import {MetricsService} from 'app-metrics';
+import {MetricsService} from 'application-metrics';
 
 function process(): void {
     for (let i = 0; i < 100; i++) {
@@ -46,6 +50,8 @@ MetricsService.timer('process_async_ms').time(() => processAsync());
 or use `@Metric()` to observe the method:
 
 ```typescript
+import {MetricsService} from 'application-metrics';
+
 class EntriesDao {
     
     @Metric('saveEntries')
@@ -60,7 +66,7 @@ class EntriesDao {
 Gauges
 ======
 ```typescript
-import {MetricsService} from 'app-metrics';
+import {MetricsService} from 'application-metrics';
 
 MetricsService.gauge('memory_external', () => process.memoryUsage().external);
 MetricsService.gauge('memory_rss', () => process.memoryUsage().rss);
@@ -72,7 +78,7 @@ Histograms
 ======
 
 ```typescript
-import {MetricsService} from 'app-metrics';
+import {MetricsService} from 'application-metrics';
 import * as fs from 'fs';
 
 const files = fs.readdirSync('.');
@@ -98,18 +104,33 @@ Output
 ======
 You can periodically print metrics to console:
 ```typescript
-import {MetricsService} from 'app-metrics';
+import {MetricsService} from 'application-metrics';
+
+MetricsService.gauge('memory_external', () => process.memoryUsage().external);
+MetricsService.gauge('memory_rss', () => process.memoryUsage().rss);
+MetricsService.gauge('memory_heapTotal', () => process.memoryUsage().heapTotal);
+MetricsService.gauge('memory_heapUsed', () => process.memoryUsage().heapUsed);
+
 
 setInterval(async () => {
     console.log(await MetricsService.toConsole());
 }, 60000);
 ```
+will produce something like:
+```
+ ****** METRICS ******
+Gauges:                                                   
+  CustomerReports_memory_external:                           104,763,523
+  CustomerReports_memory_rss:                                440,160,256
+  CustomerReports_memory_heapTotal:                          255,873,024
+  CustomerReports_memory_heapUsed:                           229,729,176
+  CustomerReports_chunkSize:                                       5,647
+```
 
-
-Also you can have an endpoint to show metrics as json or in prometheus format:
+Also, you can have an endpoint to show metrics as json or in prometheus format (example uses [NestJS](https://nestjs.com/)):
 
 ```typescript
-import {MetricsService} from 'app-metrics';
+import {MetricsService} from 'application-metrics';
 import {Controller, Get, Header} from '@nestjs/common';
 import {
     ApiOkResponse,
@@ -146,4 +167,41 @@ export class MetricsController {
         return MetricsService.toPrometheus();
     }
 }
+```
+```shell
+curl curl localhost:3000/metrics
+```
+```
+{
+    "gauges": {
+        "memory_external": 17936815,
+        "memory_rss": 291016704,
+        "memory_heapTotal": 202420224,
+        "memory_heapUsed": 180871624,
+        "chunkSize": 1260
+    }
+}
+```
+
+
+
+```shell
+curl curl localhost:3000/prometheusmetrics
+```
+```
+# HELP gauge_CustomerReports_memory_external gauge_CustomerReports_memory_external
+# TYPE gauge_CustomerReports_memory_external gauge
+memory_external 85052806
+
+# HELP gauge_CustomerReports_memory_rss gauge_CustomerReports_memory_rss
+# TYPE gauge_CustomerReports_memory_rss gauge
+memory_rss 401350656
+
+# HELP gauge_CustomerReports_memory_heapTotal gauge_CustomerReports_memory_heapTotal
+# TYPE gauge_CustomerReports_memory_heapTotal gauge
+memory_heapTotal 224940032
+
+# HELP gauge_CustomerReports_memory_heapUsed gauge_CustomerReports_memory_heapUsed
+# TYPE gauge_CustomerReports_memory_heapUsed gauge
+memory_heapUsed 185016864
 ```
