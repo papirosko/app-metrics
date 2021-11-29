@@ -120,11 +120,10 @@ will produce something like:
 ```
  ****** METRICS ******
 Gauges:                                                   
-  CustomerReports_memory_external:                           104,763,523
-  CustomerReports_memory_rss:                                440,160,256
-  CustomerReports_memory_heapTotal:                          255,873,024
-  CustomerReports_memory_heapUsed:                           229,729,176
-  CustomerReports_chunkSize:                                       5,647
+  memory_external:                           104,763,523
+  memory_rss:                                440,160,256
+  memory_heapTotal:                          255,873,024
+  memory_heapUsed:                           229,729,176
 ```
 
 Also, you can have an endpoint to show metrics as json or in prometheus format (example uses [NestJS](https://nestjs.com/)):
@@ -169,7 +168,7 @@ export class MetricsController {
 }
 ```
 ```shell
-curl curl localhost:3000/metrics
+curl localhost:3000/metrics
 ```
 ```
 {
@@ -177,8 +176,7 @@ curl curl localhost:3000/metrics
         "memory_external": 17936815,
         "memory_rss": 291016704,
         "memory_heapTotal": 202420224,
-        "memory_heapUsed": 180871624,
-        "chunkSize": 1260
+        "memory_heapUsed": 180871624
     }
 }
 ```
@@ -186,22 +184,22 @@ curl curl localhost:3000/metrics
 
 
 ```shell
-curl curl localhost:3000/prometheusmetrics
+curl localhost:3000/prometheusmetrics
 ```
 ```
-# HELP gauge_CustomerReports_memory_external gauge_CustomerReports_memory_external
-# TYPE gauge_CustomerReports_memory_external gauge
+# HELP gauge_memory_external gauge_memory_external
+# TYPE gauge_memory_external gauge
 memory_external 85052806
 
-# HELP gauge_CustomerReports_memory_rss gauge_CustomerReports_memory_rss
-# TYPE gauge_CustomerReports_memory_rss gauge
+# HELP gauge_memory_rss gauge_memory_rss
+# TYPE gauge_memory_rss gauge
 memory_rss 401350656
 
-# HELP gauge_CustomerReports_memory_heapTotal gauge_CustomerReports_memory_heapTotal
-# TYPE gauge_CustomerReports_memory_heapTotal gauge
+# HELP gauge_memory_heapTotal gauge_memory_heapTotal
+# TYPE gauge_memory_heapTotal gauge
 memory_heapTotal 224940032
 
-# HELP gauge_CustomerReports_memory_heapUsed gauge_CustomerReports_memory_heapUsed
-# TYPE gauge_CustomerReports_memory_heapUsed gauge
+# HELP gauge_memory_heapUsed gauge_memory_heapUsed
+# TYPE gauge_memory_heapUsed gauge
 memory_heapUsed 185016864
 ```
