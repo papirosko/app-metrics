@@ -1,6 +1,6 @@
 {
   "name": "application-metrics",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Metrics for a NodeJS application",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "prom-client": "^14.0.1",
-    "scats": "^1.0.32",
+    "scats": "^1.2.0",
     "tslib": "^2.1.0"
   }
 }
