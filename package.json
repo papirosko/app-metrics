@@ -1,6 +1,6 @@
 {
   "name": "application-metrics",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Metrics for a NodeJS application",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
