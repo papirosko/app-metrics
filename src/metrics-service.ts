@@ -219,7 +219,7 @@ export namespace MetricsService {
             }
         }
 
-        return msg;
+        return msg.trimEnd();
     }
 
     export function gauge(name: string, value: GaugeValueCollector): void {
