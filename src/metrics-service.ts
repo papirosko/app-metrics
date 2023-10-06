@@ -125,7 +125,8 @@ export namespace MetricsService {
             res.gauges[key] = value();
         });
 
-        const arrayOfMetrics = await registry.getMetricsAsArray();
+        const arrayOfMetrics = Collection.from(await registry.getMetricsAsArray())
+            .sort((a, b) => a.name.localeCompare(b.name));
         for (const metric of arrayOfMetrics) {
             if (metric.name.startsWith('counter_')) {
                 const cnt = registry.getSingleMetric(metric.name) as any;
