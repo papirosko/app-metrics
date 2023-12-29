@@ -138,11 +138,11 @@ export namespace MetricsService {
                 const cnt = registry.getSingleMetric(metric.name) as any;
                 const values = await cnt.get();
                 res.timers[metric.name.replace('timer_', '')] = {
-                    '50': values.values[2].value,
-                    '90': values.values[3].value,
-                    '95': values.values[4].value,
-                    '99': values.values[5].value,
-                    count: values.values[8].value,
+                    '50': option(values.values[2]).map(x => x.value).orUndefined,
+                    '90': option(values.values[3]).map(x => x.value).orUndefined,
+                    '95': option(values.values[4]).map(x => x.value).orUndefined,
+                    '99': option(values.values[5]).map(x => x.value).orUndefined,
+                    count: option(values.values[8]).map(x => x.value).orUndefined,
                 };
             } else if (metric.name.startsWith('histogram_')) {
                 const h = registry.getSingleMetric(metric.name) as any;
@@ -260,7 +260,7 @@ export function Metric(name?: string | MetricConfiguration): MethodDecorator {
         if (typeof name === 'string') {
             return {
                 name: n
-            } as MetricConfiguration
+            } as MetricConfiguration;
         } else {
             return name as MetricConfiguration;
         }
