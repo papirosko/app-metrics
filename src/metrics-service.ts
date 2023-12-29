@@ -230,13 +230,16 @@ export namespace MetricsService {
         }
     }
 
-    export function timer(name: string): Timer {
+    export function timer(name: string, conf?: TimerConfiguration): Timer {
         const timerMetricName = `timer_${metricsPrefix}${name}`;
         let existing = registry.getSingleMetric(timerMetricName) as metrics.Summary<string>;
         if (!existing) {
             existing = new metrics.Summary({
                 name: timerMetricName,
                 help: timerMetricName,
+                ageBuckets: option(conf).map(x => x.ageBuckets).orUndefined,
+                maxAgeSeconds: option(conf).map(x => x.maxAgeSeconds).orUndefined,
+                pruneAgedBuckets: option(conf).map(x => x.pruneAgedBuckets).getOrElseValue(false),
             });
             registry.registerMetric(existing);
         }
@@ -252,13 +255,27 @@ export namespace MetricsService {
  * name will be used.
  * @constructor
  */
-export function Metric(name?: string): MethodDecorator {
+export function Metric(name?: string | MetricConfiguration): MethodDecorator {
+    const opt = option(name).map(n => {
+        if (typeof name === 'string') {
+            return {
+                name: n
+            } as MetricConfiguration
+        } else {
+            return name as MetricConfiguration;
+        }
+    });
     return (target, key, descriptor: PropertyDescriptor) => {
         const method = descriptor.value;
 
         descriptor.value = new Proxy(method, {
             apply: function (target, thisArg, args) {
-                return MetricsService.timer(`${thisArg.constructor.name}_${option(name).getOrElseValue(target.name)}`)
+                const timerName = `${thisArg.constructor.name}_${opt.flatMap(n => option(n.name)).getOrElseValue(target.name)}`;
+                return MetricsService.timer(timerName, {
+                    pruneAgedBuckets: opt.flatMap(x => option(x.pruneAgedBuckets)).orUndefined,
+                    maxAgeSeconds: opt.flatMap(x => option(x.maxAgeSeconds)).orUndefined,
+                    ageBuckets: opt.flatMap(x => option(x.ageBuckets)).orUndefined,
+                })
                     .time(() => target.apply(thisArg, args));
             }
         });
@@ -282,6 +299,19 @@ export interface MetricsJson {
     gauges: Record<string, any>;
     timers: Record<string, TimerJson>;
     unknown: Record<string, any>;
+}
+
+export interface TimerConfiguration {
+    readonly maxAgeSeconds?: number;
+    readonly ageBuckets?: number;
+    readonly pruneAgedBuckets?: boolean;
+}
+
+export interface MetricConfiguration {
+    readonly name?: string;
+    readonly maxAgeSeconds?: number;
+    readonly ageBuckets?: number;
+    readonly pruneAgedBuckets?: boolean;
 }
 
 class Timer {

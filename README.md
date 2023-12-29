@@ -61,6 +61,31 @@ class EntriesDao {
 }
 ```
 
+Metric name can be skipped, the method name will be used instead:
+```typescript
+import {MetricsService} from 'application-metrics';
+
+class EntriesDao {
+    
+    @Metric()
+    async saveEntries(entries: object[]): Promise<void> {
+        // ...
+    }
+}
+```
+
+You can also pass parameters to the underlying summary object. See [prom-client summary documentation](https://github.com/siimon/prom-client?tab=readme-ov-file#configuration-2).
+```typescript
+import {MetricsService} from 'application-metrics';
+
+class EntriesDao {
+    
+    @Metric({maxAgeSeconds: 300, ageBuckets: 5, pruneAgedBuckets: true})
+    async saveEntries(entries: object[]): Promise<void> {
+        // ...
+    }
+}
+```
 
 
 Gauges
