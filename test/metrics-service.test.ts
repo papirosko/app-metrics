@@ -1,4 +1,4 @@
-import {MetricsService} from '../src';
+import {MetricsService} from '../src/index';
 
 describe('MetricsService', () => {
 
