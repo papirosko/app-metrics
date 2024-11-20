@@ -1,7 +1,10 @@
 .idea
-.eslintrc.js
+.eslintrc.cjs
 test
-jest.config.ts
+coverage
+junit.xml
+src
+jest.config.cts
 package-lock.json
 tsconfig.json
 tsconfig-eslint.json
